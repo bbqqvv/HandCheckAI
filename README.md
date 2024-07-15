@@ -35,12 +35,5 @@ Sau đó chạy lệnh sau trong thư mục chứa tệp `requirements.txt`:
 pip install -r requirements.txt
 ```
 
-### Lưu ý
-
-- **opencv-python-headless**: Phiên bản OpenCV không có giao diện đồ họa, phù hợp cho các ứng dụng không yêu cầu hiển thị hình ảnh bằng GUI của OpenCV.
-- **tkinter**: Thư viện này thường có sẵn trong Python mặc định, nhưng nếu bạn gặp vấn đề khi sử dụng, bạn có thể cần cài đặt riêng. Trên Ubuntu, bạn có thể cài đặt bằng lệnh sau:
-  ```sh
-  sudo apt-get install python3-tk
-  ```
 
 Sau khi cài đặt các thư viện cần thiết, bạn có thể chạy mã Python đã cung cấp để đo góc bàn tay.
