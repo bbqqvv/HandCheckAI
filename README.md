@@ -1,3 +1,5 @@
+# IDE PyCharm
+
 Để chạy được mã Python này, anh em cần cài đặt các thư viện sau:
 
 1. **OpenCV**: Để xử lý hình ảnh.
