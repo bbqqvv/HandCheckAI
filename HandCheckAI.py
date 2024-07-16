@@ -1,9 +1,9 @@
 # from PIL import Image
-# img = Image.open(r"D:\New folder (2)\11527.png")
-# angle = -12.11
+# img = Image.open(r"D:\New folder (2)\11566.png")
+#
+# angle = -100
 # rotate_img= img.rotate(angle, expand = True)
 # rotate_img.show()
-
 
 import cv2
 import mediapipe as mp
@@ -15,8 +15,10 @@ import os
 import openpyxl
 
 mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(static_image_mode=False, max_num_hands=1, min_detection_confidence=0.7, min_tracking_confidence=0.5)
+hands = mp_hands.Hands(static_image_mode=False, max_num_hands=1, min_detection_confidence=0.7,
+                       min_tracking_confidence=0.5)
 mp_drawing = mp.solutions.drawing_utils
+
 
 def calculate_angle_with_vertical(a, b):
     """Tính góc giữa đường thẳng nối từ a đến b với trục dọc"""
@@ -27,9 +29,16 @@ def calculate_angle_with_vertical(a, b):
     hand_vector = hand_vector / np.linalg.norm(hand_vector)
 
     dot_product = np.dot(hand_vector, vertical_vector)
+    cross_product = np.cross(vertical_vector, hand_vector)
+
     angle_rad = np.arccos(np.clip(dot_product, -1.0, 1.0))
     angle_deg = np.degrees(angle_rad)
+
+    if cross_product < 0:
+        angle_deg = -angle_deg
+
     return angle_deg
+
 
 def process_image(image_path):
     """Xử lý ảnh và đo góc độ bàn tay"""
@@ -65,6 +74,7 @@ def process_image(image_path):
         print('Không nhận diện được bàn tay hoặc không đủ điểm đặc trưng.')
         return image_with_landmarks, None, image_name
 
+
 def display_image(image, angles, image_name):
     """Hiển thị ảnh đã xử lý lên giao diện"""
     image = Image.fromarray(image)
@@ -85,10 +95,11 @@ def display_image(image, angles, image_name):
 
     if angles:
         for i, angle in enumerate(angles):
-            info_text.insert(tk.END, f'Hand {i+1}:\n')
+            info_text.insert(tk.END, f'Hand {i + 1}:\n')
             info_text.insert(tk.END, f'Góc giữa cổ tay và ngón tay giữa: {angle:.2f} độ\n\n')
 
     info_text.config(state=tk.DISABLED)
+
 
 def save_to_excel(data):
     """Lưu dữ liệu vào file Excel"""
@@ -107,6 +118,7 @@ def save_to_excel(data):
         wb.save(excel_file)
         print(f"Dữ liệu đã được lưu vào file Excel: {excel_file}")
 
+
 def open_file_dialog():
     file_paths = filedialog.askopenfilenames(filetypes=[("Image files", "*.jpg *.jpeg *.png")])
     data_to_save = []
@@ -118,10 +130,11 @@ def open_file_dialog():
 
             if angles:
                 for i, angle in enumerate(angles):
-                    data_to_save.append([image_name, f"Hand {i+1}", angle])
+                    data_to_save.append([image_name, f"Hand {i + 1}", angle])
 
     if data_to_save:
         save_to_excel(data_to_save)
+
 
 root = tk.Tk()
 root.title("Hand Angle Measurement")
