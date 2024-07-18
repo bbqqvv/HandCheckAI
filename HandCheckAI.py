@@ -1,9 +1,10 @@
 # from PIL import Image
-# img = Image.open(r"D:\New folder (2)\11566.png")
+# img = Image.open(r"D:\New folder (2)\3226.png")
 #
-# angle = -100
+# angle = -4.6
 # rotate_img= img.rotate(angle, expand = True)
 # rotate_img.show()
+
 
 import cv2
 import mediapipe as mp
@@ -15,13 +16,12 @@ import os
 import openpyxl
 
 mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(static_image_mode=False, max_num_hands=1, min_detection_confidence=0.7,
-                       min_tracking_confidence=0.5)
+hands = mp_hands.Hands(static_image_mode=False, max_num_hands=2, min_detection_confidence=0.4,
+                       min_tracking_confidence=0.4)
 mp_drawing = mp.solutions.drawing_utils
 
 
 def calculate_angle_with_vertical(a, b):
-    """Tính góc giữa đường thẳng nối từ a đến b với trục dọc"""
     a = np.array(a)
     b = np.array(b)
     vertical_vector = np.array([0, -1])
@@ -40,8 +40,29 @@ def calculate_angle_with_vertical(a, b):
     return angle_deg
 
 
+def preprocess_image(image):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Apply GaussianBlur to reduce noise
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+
+    # Apply CLAHE (Contrast Limited Adaptive Histogram Equalization)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+    equalized = clahe.apply(blurred)
+
+    # Normalize the image
+    normalized = cv2.normalize(equalized, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX)
+
+    # Sharpen the image
+    kernel = np.array([[0, -1, 0],
+                       [-1, 5, -1],
+                       [0, -1, 0]])
+    sharpened = cv2.filter2D(normalized, -1, kernel)
+
+    return cv2.cvtColor(sharpened, cv2.COLOR_GRAY2BGR)
+
+
 def process_image(image_path):
-    """Xử lý ảnh và đo góc độ bàn tay"""
     image_name = os.path.basename(image_path)
     print(f"Processing image: {image_name}")
 
@@ -50,6 +71,7 @@ def process_image(image_path):
         print(f"Không thể đọc ảnh từ đường dẫn: {image_path}")
         return None, None, None, None
 
+    image = preprocess_image(image)
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     results = hands.process(image_rgb)
 
@@ -76,7 +98,6 @@ def process_image(image_path):
 
 
 def display_image(image, angles, image_name):
-    """Hiển thị ảnh đã xử lý lên giao diện"""
     image = Image.fromarray(image)
     image.thumbnail((400, 400))
     imgtk = ImageTk.PhotoImage(image=image)
@@ -102,7 +123,6 @@ def display_image(image, angles, image_name):
 
 
 def save_to_excel(data):
-    """Lưu dữ liệu vào file Excel"""
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Hand Angles"
