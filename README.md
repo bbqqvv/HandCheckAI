@@ -1,125 +1,80 @@
 
-# 🖐️ HandCheckAI
+# 📐 Ứng Dụng Đo Góc Bàn Tay - README
 
-**HandCheckAI** là một ứng dụng giao diện đồ họa (GUI) giúp bạn đo các góc trên bàn tay từ ảnh đầu vào bằng cách sử dụng **MediaPipe**, **OpenCV**, và **Tkinter**. Phù hợp để phân tích động tác tay trong vật lý trị liệu, giáo dục, hoặc nghiên cứu khoa học.
+## 📌 Tổng Quan
 
----
+Ứng dụng này cung cấp khả năng đo góc bàn tay nâng cao bằng cách sử dụng thị giác máy tính và thư viện MediaPipe. Nó có thể phát hiện bàn tay trong ảnh, tính toán các góc khác nhau (độ nghiêng lòng bàn tay, góc ngón tay), và cung cấp phân tích chi tiết về tư thế tay.
 
-## 🔧 Tính năng chính
+## ✨ Tính Năng Chính
 
-- Tải ảnh tay từ thư mục
-- Tự động phát hiện và vẽ landmark bàn tay
-- Tính toán các góc quan trọng trên ngón tay
-- Duyệt từng ảnh hoặc xử lý hàng loạt
-- Lưu kết quả vào file Excel (.xlsx)
+* **Phát hiện nhiều bàn tay**: Có thể phát hiện và phân tích tối đa 2 bàn tay cùng lúc
+* **Đo góc toàn diện**:
 
+  * Góc nghiêng của lòng bàn tay (theo phương dọc)
+  * Góc xoay của lòng bàn tay (theo phương ngang)
+  * Góc riêng biệt của từng ngón tay (ngón cái, trỏ, giữa, áp út, út)
+* **Xử lý ảnh nâng cao**: Sử dụng CLAHE, lọc song phương và làm sắc nét để cải thiện khả năng phát hiện
+* **Hiển thị trực quan**: Hiển thị các điểm mốc và thông tin góc trên ảnh
+* **Xuất dữ liệu**: Lưu các phép đo vào tệp Excel với định dạng có điều kiện
+* **Giao diện thân thiện**: Giao diện dạng tab với các bảng kết quả và lịch sử
 
-## 🚀 Cài đặt
+## 🛠️ Chi Tiết Kỹ Thuật
 
-### 1. Clone dự án
+* **Thị giác máy tính**: Sử dụng MediaPipe Hands để phát hiện điểm mốc
+* **Xử lý ảnh**: Dùng OpenCV để tiền xử lý và tăng cường ảnh
+* **Giao diện người dùng**: Tkinter với các widget ttk cho giao diện hiện đại
+* **Xuất dữ liệu**: Sử dụng OpenPyXL để tạo báo cáo Excel
+* **Xử lý lỗi**: Bắt lỗi toàn diện và hiển thị thông báo rõ ràng cho người dùng
 
-```bash
-git clone https://github.com/bbqqvv/HandCheckAI.git
-cd HandCheckAI
-````
+## 🚀 Cách Sử Dụng
 
-### 2. Tạo và kích hoạt môi trường ảo
+1. **Tải ảnh**: Nhấn "Open Images" để chọn một hoặc nhiều ảnh tay
+2. **Xử lý ảnh**: Nhấn "Process All" để phân tích tất cả các ảnh đã tải
+3. **Xem kết quả**:
 
-```bash
-python -m venv .venv
-```
+   * Xem bàn tay được phát hiện với điểm mốc và góc
+   * Kiểm tra các phép đo chi tiết trong tab Kết quả
+   * Xem lại lịch sử xử lý trong tab Lịch sử
+4. **Lưu dữ liệu**: Xuất tất cả kết quả đo ra file Excel bằng "Save Results"
+5. **Điều hướng**: Dùng phím mũi tên hoặc nút điều hướng để xem ảnh
 
-* **Windows**:
+## ⚙️ Yêu Cầu Hệ Thống
 
-  ```bash
-  .venv\Scripts\activate
+* Python 3.7 trở lên
+* Các gói cần thiết:
+
+  ```
+  opencv-python
+  mediapipe
+  pillow
+  openpyxl
+  numpy
   ```
 
-* **macOS/Linux**:
+## 🏗️ Cấu Trúc Mã Nguồn
 
-  ```bash
-  source .venv/bin/activate
-  ```
+* `EnhancedHandTracker`: Logic chính cho phát hiện tay và tính toán góc
+* `HandAngleApp`: Lớp chính của ứng dụng, chứa giao diện và quy trình
+* Các phương thức quan trọng:
 
-### 3. Cài đặt thư viện
+  * `process_frame()`: Quy trình xử lý ảnh chính
+  * `calculate_palm_orientation()`: Tính góc lòng bàn tay
+  * `calculate_finger_angles()`: Đo góc từng ngón tay
+  * `advanced_preprocess()`: Tăng cường chất lượng ảnh để nhận diện tốt hơn
 
-```bash
-pip install -r requirements.txt
-```
+## 💡 Mẹo Để Có Kết Quả Tốt Nhất
 
-> Hoặc nếu không có file `requirements.txt`, hãy cài thủ công:
+* Sử dụng ảnh đủ sáng và bàn tay rõ nét
+* Đảm bảo tay không bị xoay quá mức hoặc bị che khuất
+* Với nhiều bàn tay, nên để chúng tách biệt trong khung hình
+* Ảnh lớn (1000+ pixels) cho kết quả tốt hơn nhưng sẽ được tự động thu nhỏ
 
-```bash
-pip install mediapipe opencv-python numpy Pillow openpyxl
-```
+## 🐛 Các Vấn Đề Đã Biết
 
----
+* Khó xử lý khi các bàn tay bị chồng lên nhau quá nhiều
+* Góc xoay tay quá lớn có thể làm giảm độ chính xác
+* Hiệu suất phụ thuộc vào chất lượng ảnh và điều kiện ánh sáng
 
-## ▶️ Chạy ứng dụng
+## 📜 Giấy Phép
 
-```bash
-python HandCheckAI.py
-```
-
----
-
-## 🧑‍💻 Cách sử dụng
-
-| Nút chức năng    | Mô tả                                |
-| ---------------- | ------------------------------------ |
-| **Open Images**  | Chọn thư mục chứa ảnh tay            |
-| **Process All**  | Phân tích và tính góc cho tất cả ảnh |
-| **Save Results** | Lưu dữ liệu đo được vào Excel        |
-| **Clear All**    | Xóa dữ liệu và làm sạch giao diện    |
-
----
-
-## 📂 Đầu ra
-
-- **File Excel (.xlsx)**: chứa thông tin tên ảnh và các góc đo được  
-- **Giao diện**: hiển thị ảnh gốc và kết quả vẽ landmark + góc
-
-<div style="display: flex; gap: 10px; justify-content: start;">
-  <img src="img.png" alt="Giao diện ảnh 1" style="width: 48%; border: 1px solid #ccc; border-radius: 6px;">
-  <img src="img_1.png" alt="Giao diện ảnh 2" style="width: 48%; border: 1px solid #ccc; border-radius: 6px;">
-</div>
-
----
-
-## 🛠️ Ghi chú kỹ thuật
-
-* Ứng dụng sử dụng `MediaPipe Hands` của Google để nhận diện tay
-* Hỗ trợ 1–2 bàn tay trong mỗi ảnh
-* Khuyến khích ảnh đầu vào là **hình vuông** hoặc được resize để tránh cảnh báo từ MediaPipe
-
----
-
-## ⚠️ Cảnh báo & khắc phục
-
-| Lỗi hoặc cảnh báo     | Nguyên nhân                   | Giải pháp                           |
-| --------------------- | ----------------------------- | ----------------------------------- |
-| `Mean of empty slice` | Không phát hiện được landmark | Kiểm tra lại ảnh đầu vào            |
-| `NORM_RECT` warning   | Thiếu kích thước ảnh          | Resize ảnh đầu vào thành hình vuông |
-| Không thấy landmark   | Tay bị mờ hoặc quá nhỏ        | Dùng ảnh rõ ràng hơn, đủ sáng       |
-
----
-
-## 📜 Giấy phép
-
-Dự án phát hành theo giấy phép [MIT](LICENSE).
-
----
-
-## ❤️ Đóng góp
-
-Bạn có thể đóng góp bằng cách:
-
-* Mở issue nếu phát hiện lỗi
-* Gửi pull request để cải thiện tính năng
-* Đề xuất tính năng mới
-
----
-
-## 👤 Tác giả
-
-[bbqqvv](https://github.com/bbqqvv)
+Dự án này là mã nguồn mở và được phép sử dụng miễn phí theo giấy phép MIT.
