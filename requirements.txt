@@ -1,0 +1,5 @@
+opencv-python-headless>=4.5.0
+mediapipe>=0.8.0
+numpy>=1.19.0
+pillow>=8.0.0
+openpyxl>=3.0.0
